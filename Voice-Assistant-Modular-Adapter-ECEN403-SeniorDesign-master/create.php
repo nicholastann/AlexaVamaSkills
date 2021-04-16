@@ -6,16 +6,18 @@ require __DIR__ . '/appliances/appliances.php';
 $appliance = [
     'id' => '',
     'name' => '',
+    'type' => '',
     'status' => '',
     'channel' => '',
-    'volume' => ''
+    'volume' => '',
 ];
 
 $errors = [
     'name' => "",
     'status' => "",
+    'type' => "",
     'channel' => "",
-    'volume' => ""
+    'volume' => "",
 ];
 $isValid = true;
 
@@ -26,12 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($isValid) {
         $appliance = createappliance($appliance);
-
-        header("Location: index.php");
+        $a = "Location: ";
+        $b = ".php";
+        $location = $a.$appliance['type'].$b;
+        header($location);
     }
 }
 
 ?>
 
-<?php include '_form.php' ?>
+<?php include 'c_form.php' ?>
 

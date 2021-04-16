@@ -1,14 +1,9 @@
 <body style="background-color:#101020;">
     <div style="background-color:#101020; color:#ffffff;" class="container">
+        <button onclick="window.history.back();" style="background-color:#088292; color:#ffffff;" class="btn btn-sm btn-outline-info">Go Back</button>
         <div style="background-color:#101020; class="card">
             <div class="card-header">
-                <h3>
-                    <?php if ($appliance['id']): ?>
-                        Update appliance <b><?php echo $appliance['name'] ?></b>
-                    <?php else: ?>
-                        Create new appliance
-                    <?php endif ?>
-                </h3>
+                <h3> Create new appliance </h3>
             </div>
             <div class="card-body">
 
@@ -22,8 +17,9 @@
                             <?php echo  $errors['name'] ?>
                         </div>
                     </div>
+
                     <div class="form-group">
-                        <label>Status</label>
+                        <label>Status (1 for On/locked, 0 for Off/Unlocked)</label>
                         <input name="status" value="<?php echo $appliance['status'] ?>"
                             class="form-control  <?php echo $errors['status'] ? 'is-invalid' : '' ?>">
                         <div class="invalid-feedback">
@@ -31,8 +27,22 @@
                         </div>
                     </div>
 
+
                     <div class="form-group">
-                        <label>Channel</label>
+                        <label>Type</label>
+                            <select name="type" class="form-control" <?php echo $errors['type'] ? 'is-invalid' : '' ?>">>
+                                <option>tv</option>
+                                <option>lock</option>
+                                <option>light</option>
+                            </select>
+                        <div class="invalid-feedback">
+                            <?php echo  $errors['channel'] ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                    TV ONLY
+                        <label>Channel (1 - 1000)</label>
                         <input name="channel" value="<?php echo $appliance['channel'] ?>"
                             class="form-control  <?php echo $errors['channel'] ? 'is-invalid' : '' ?>">
                         <div class="invalid-feedback">
@@ -41,7 +51,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Volume</label>
+                    TV ONLY
+                        <label>Volume (0 - 100)</label>
                         <input name="volume" value="<?php echo $appliance['volume'] ?>"
                             class="form-control  <?php echo $errors['volume'] ? 'is-invalid' : '' ?>">
                         <div class="invalid-feedback">
@@ -49,10 +60,19 @@
                         </div>
                     </div>
 
-
                     <button class="btn btn-success">Submit</button>
                 </form>
             </div>
         </div>
     </div>
 </body>
+
+<nav class="navbar">
+  <a href="index.php"><i class="fa fa-fw fa-home"></i></a>
+  <a href="light.php"><i class="fa fa-lightbulb-o"></i></a>
+  <a href="lock.php"><i class="fa fa-lock"></i></a>
+  <a href=""><i class="fa fa-tv"></i></a>
+</nav>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="style.css">

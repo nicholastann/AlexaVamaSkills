@@ -5,49 +5,37 @@ $appliances = getappliances();
 
 include 'partials/header.php';
 ?>
-
+<h1 style="color:white; text-align:center;">Voice Assistant Modular Adapter</h1>
 <body style="background-color:#101020;">
-    <h1 style="color:white; text-align:center;">VAMA Appliance Dashboard</h1>
-    <div class="container">
+    <div class="container">   
+    <br>
+        <p style="color:white; text-align:center;">
+        Appliances are grouped by appliance type. To view and edit appliances use the navigation icons below. 
+        </p>
 
-        <table class="table" style="color:#fff">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>status</th>
-                <th>channel</th>
-                <th>volume</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($appliances as $appliance): ?>
-                <tr>
-                    <td><?php echo $appliance['id'] ?></td>
-                    <td><?php echo $appliance['name'] ?></td>
-                    <td><?php echo $appliance['status'] ?></td>
-                    <td><?php echo $appliance['channel'] ?></td>
-                    <td><?php echo $appliance['volume'] ?></td>
-                    <td>
-                        <a href="view.php?id=<?php echo $appliance['id'] ?>" style="background-color:#088292; color:#ffffff;" class="btn btn-sm btn-outline-info">View</a>
-                        <a href="update.php?id=<?php echo $appliance['id'] ?>" class="btn btn-sm btn-outline-secondary" style="background-color:#555555; color:#ffffff;">Update</a>
-                        <form method="POST" action="delete.php">
-                            <input type="hidden" name="id" value="<?php echo $appliance['id'] ?>">
-                            <button style="background-color:#dc3545; color:#ffffff;" class="btn btn-sm btn-outline-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach;; ?>
-            </tbody>
-        </table>
-        <p>
-            <a class="btn btn-success" style="background-color:#228732;" href="create.php">Create new appliance</a>
+        <br>
+        
+        <p style="color:white; text-align:center;">
+        Voice Assistant Modular Adapter (VAMA) is a device that can be added onto various home appliances to make them act similar to smart appliances. 
+        The advantage is you can keep your old appliances and control them with Alexa, through a web interface, or through traditional physical methods.
+        This server acts as the central hub for storing information and communicating data between Alexa, the user, and the appliances.
+        </p>
+
+        <br>
+
+        <p style="color:white; text-align:center;"> 
+        You can watch our demo video if you'd like to learn more. 
         </p>
     </div>
+    <div align="center"> <iframe height="315" src="https://www.youtube.com/embed/l-owCyHujms" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> </div>
 </body>
+<nav class="navbar">
+  <a class="active" href=""><i class="fa fa-fw fa-home"></i></a>
+  <a href="light.php"><i class="fa fa-lightbulb-o"></i></a>
+  <a href="lock.php"><i class="fa fa-lock"></i></a>
+  <a href="tv.php"><i class="fa fa-tv"></i></a>
+</nav>
 
 <?php include 'partials/footer.php' ?>
-
-
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="style.css">

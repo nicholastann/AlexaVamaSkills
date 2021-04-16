@@ -16,19 +16,18 @@ function getapplianceById($id)
     return null;
 }
 
-function createappliance($data)
-{
+function createappliance($data) {
     $appliances = getappliances();
 
     $newId = 1;
-    $applianceExist = getapplianceByID($newID);
-    while ($applianceExist) {
-        $newId = $newId + 1;
-        $applianceExist = getapplianceByID($newID);
+    foreach ($appliances as $appliance) {
+        if ($appliance['id'] == $newId) {
+            $newId = $newId + 1;
+        }
     }
 
-    $data['id'] = $newID;
-    $appliances[] = $data;
+    $data['id'] = $newId;
+    $appliances[$newId] = $data;
 
     putJson($appliances);
 
@@ -40,6 +39,7 @@ function updateappliance($data, $id)
     $updateappliance = [];
     $appliances = getappliances();
     foreach ($appliances as $i => $appliance) {
+
         if ($appliance['id'] == $id) {
             $appliances[$i] = $updateappliance = array_merge($appliance, $data);
         }
@@ -70,39 +70,62 @@ function putJson($appliances)
 
 function validateappliance($appliance, &$errors)
 {
+    
     $isValid = true;
-    // Start of validation
+
+    //name validations
     if (!$appliance['name']) {
         $isValid = false;
         $errors['name'] = 'Name is mandatory';
     }
-    if (!$appliance['status']) {
-        if ($appliance['status'] != 0) {
-            $isValid = false;
-            $errors['status'] = 'Status must be 1 or 0';
-        }
-    }
-    if (!$appliance['channel']) {
-        if ($appliance['channel'] < 0) {
-            $isValid = false;
-            $errors['status'] = 'channel cannot be less than 0';
-        }
-        else if ($appliance['channel'] > 1000) {
-            $isValid = false;
-            $errors['channel'] = 'channel cannot be greater than 1000';
-        }
-    }
-    if (!$appliance['volume']) {
-        if ($appliance['volume'] < 0) {
-            $isValid = false;
-            $errors['volume'] = 'volume cannot be less than 0';
-        }
-        else if ($appliance['volume'] > 100) {
-            $isValid = false;
-            $errors['volume'] = 'volume cannot be greater than 100';
-        }
-    }
-    // End Of validation
 
+    //type validations
+    if (!$appliance['type']) {
+        $isValid = false;
+        $errors['name'] = 'Type is mandatory';
+    }
+
+    //status validations
+    if (!$appliance['status']) {
+        $isValid = false;
+        $errors['status'] = 'Status is mandatory';
+    }
+    if (filter_var($appliance['status'], FILTER_VALIDATE_INT, array("options" => array("min_range"=>0, "max_range"=>1))) === false) {
+        $isValid = false;
+        $errors['status'] = 'Status must be 1 or 0';
+    }
+    if ($appliance['status'] === 0 || $appliance['status'] === '0') {
+        $isValid = true;
+        $errors['status'] = '';
+    } 
+
+    //cv validations
+    if ($appliance['type'] === "tv") {
+        //channel validations
+        if ($appliance['channel']) {
+            if (filter_var($appliance['channel'], FILTER_VALIDATE_INT, array("options" => array("min_range"=>1, "max_range"=>1000))) === false) {
+                $isValid = false;
+                $errors['channel'] = 'Channel must be an integer between 1 and 1000';
+            }
+        }
+
+        //volume validations
+        if ($appliance['volume']) {
+            if (filter_var($appliance['volume'], FILTER_VALIDATE_INT, array("options" => array("min_range"=>0, "max_range"=>100))) === false) {
+                $isValid = false;
+                $errors['volume'] = 'Volume must be an integer between 0 and 100';
+            }
+        }
+    }
+    else {
+        if ($appliance['volume']) {
+            $isValid = false;
+            $errors['volume'] = 'Volume should be NULL';
+        }
+        if ($appliance['channel']) {
+            $isValid = false;
+            $errors['channel'] = 'Channel should be NULL';
+        }
+    }
     return $isValid;
 }

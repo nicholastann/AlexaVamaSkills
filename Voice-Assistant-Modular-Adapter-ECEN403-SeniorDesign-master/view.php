@@ -22,6 +22,7 @@ if (!$appliance) {
                 <h3>View appliance: <b><?php echo $appliance['name'] ?></b></h3>
             </div>
             <div class="card-body">
+                <button onclick="window.history.back();" style="background-color:#088292; color:#ffffff;" class="btn btn-secondary">Go Back</button>
                 <a class="btn btn-secondary" style="background-color:#555555;" href="update.php?id=<?php echo $appliance['id'] ?>">Update</a>
                 <form style="display: inline-block" method="POST" action="delete.php">
                     <input type="hidden" name="id" value="<?php echo $appliance['id'] ?>">
@@ -31,6 +32,10 @@ if (!$appliance) {
             <table class="table" style="color:#fff">
                 <tbody>
                 <tr>
+                    <th>Appliance Type:</th>
+                    <td><?php echo $appliance['type'] ?></td>
+                </tr>
+                <tr>
                     <th>ID:</th>
                     <td><?php echo $appliance['id'] ?></td>
                 </tr>
@@ -39,23 +44,39 @@ if (!$appliance) {
                     <td><?php echo $appliance['name'] ?></td>
                 </tr>
                 <tr>
-                    <th>status:</th>
-                    <td><?php echo $appliance['status'] ?></td>
+                    <th>Status:</th>
+                    <?php if ($appliance['type'] === 'lock'): ?> 
+                        <?php if ($appliance['status'] === '1'): ?> <td>Locked</td>   <?php endif ?>
+                        <?php if ($appliance['status'] === '0'): ?><td> Unlocked </td> <?php endif ?>
+                    <?php else: ?>
+                        <?php if ($appliance['status'] === '1'): ?> <td>On </td>  <?php endif ?>
+                        <?php if ($appliance['status'] === '0'): ?><td> Off </td> <?php endif ?>
+                    <?php endif ?>
                 </tr>
+                <?php if ($appliance['type'] === "tv"): ?>
                 <tr>
-                    <th>channel:</th>
+                    <th>Channel:</th>
                     <td><?php echo $appliance['channel'] ?></td>
                 </tr>
                 <tr>
-                    <th>volume:</th>
+                    <th>Volume:</th>
                     <td><?php echo $appliance['volume'] ?></td>
                 </tr>
+                <?php endif ?>
                 </tbody>
             </table>
         </div>
     </div>
 </body>
 
+<nav class="navbar">
+  <a href="index.php"><i class="fa fa-fw fa-home"></i></a>
+  <a href="light.php"><i class="fa fa-lightbulb-o"></i></a>
+  <a href="lock.php"><i class="fa fa-lock"></i></a>
+  <a href="tv.php"><i class="fa fa-tv"></i></a>
+</nav>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="style.css">
 
 
 <?php include 'partials/footer.php' ?>

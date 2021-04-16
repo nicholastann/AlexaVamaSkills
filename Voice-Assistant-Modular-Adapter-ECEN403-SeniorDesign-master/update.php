@@ -14,9 +14,11 @@ if (!$appliance) {
     exit;
 }
 
+
 $errors = [
     'name' => "",
     'status' => "",
+    'type' => "",
     'channel' => "",
     'volume' => ""
 ];
@@ -28,10 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($isValid) {
         $appliance = updateappliance($_POST, $applianceId);
-        header("Location: index.php");
+        $a = "Location: ";
+        $b = ".php";
+        $location = $a.$appliance['type'].$b;
+        header($location);
     }
 }
 
 ?>
 
-<?php include '_form.php' ?>
+<?php include 'u_form.php' ?>
