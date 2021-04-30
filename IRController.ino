@@ -411,8 +411,16 @@ void loop() {
    if (buttonState6==HIGH){
     //clear current codes
       powerCode = 0b00000000000000000000000000000000;
-      chanUp =   0b00000000000000000000000000000000;
-      chanDown = 0b00000000000000000000000000000000;
+      zero =   0b00000000000000000000000000000000;
+      one =   0b00000000000000000000000000000000;
+      two =   0b00000000000000000000000000000000;
+      three =   0b00000000000000000000000000000000;
+      four =   0b00000000000000000000000000000000;
+      five =   0b00000000000000000000000000000000;
+      six =   0b00000000000000000000000000000000;
+      seven =   0b00000000000000000000000000000000;
+      eight =   0b00000000000000000000000000000000;
+      nine =   0b00000000000000000000000000000000;
       volUp =    0b00000000000000000000000000000000;
       volDown = 0b00000000000000000000000000000000;
       
@@ -423,12 +431,52 @@ void loop() {
       }
 
        if (irrecv.decode()) { 
-        chanUp = irrecv.results()
+        zero = irrecv.results()
         irrecv.resume();
         delay(150);
       }
        if (irrecv.decode()) {
-        chanDown = irrecv.results()
+        one = irrecv.results()
+        irrecv.resume();
+        delay(150);
+      }
+       if (irrecv.decode()) {
+        two = irrecv.results()
+        irrecv.resume();
+        delay(150);
+      }
+       if (irrecv.decode()) {
+        three = irrecv.results()
+        irrecv.resume();
+        delay(150);
+      }
+       if (irrecv.decode()) {
+        four = irrecv.results()
+        irrecv.resume();
+        delay(150);
+      }
+       if (irrecv.decode()) {
+        five = irrecv.results()
+        irrecv.resume();
+        delay(150);
+      }
+       if (irrecv.decode()) {
+        six = irrecv.results()
+        irrecv.resume();
+        delay(150);
+      }
+       if (irrecv.decode()) {
+        seven = irrecv.results()
+        irrecv.resume();
+        delay(150);
+      }
+       if (irrecv.decode()) {
+        eight = irrecv.results()
+        irrecv.resume();
+        delay(150);
+      }
+       if (irrecv.decode()) {
+        nine = irrecv.results()
         irrecv.resume();
         delay(150);
       }
