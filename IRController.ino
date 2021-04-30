@@ -1,6 +1,7 @@
 #include <ArduinoJson.h>
 #include <IRRemote.h>
 #include <WiFi.h>
+#include <HttpClient.h>
 
 #define LED1 RED_LED
 #define LED2 GREEN_LED
@@ -12,8 +13,16 @@
 #define BITtimeRC6   444
 
 unsigned long powerCode = 0b00000000000000000000000000000000;
-unsigned long chanUp =   0b00000000000000000000000000000000;
-unsigned long chanDown = 0b00000000000000000000000000000000;
+unsigned long zero =   0b00000000000000000000000000000000;
+unsigned long one =   0b00000000000000000000000000000000;
+unsigned long two =   0b00000000000000000000000000000000;
+unsigned long three =   0b00000000000000000000000000000000;
+unsigned long four =   0b00000000000000000000000000000000;
+unsigned long five =   0b00000000000000000000000000000000;
+unsigned long six =   0b00000000000000000000000000000000;
+unsigned long seven =   0b00000000000000000000000000000000;
+unsigned long eight =   0b00000000000000000000000000000000;
+unsigned long nine =   0b00000000000000000000000000000000;
 unsigned long volUp =    0b00000000000000000000000000000000;
 unsigned long volDown = 0b00000000000000000000000000000000;
 
@@ -27,6 +36,7 @@ const char* server = "vama.herokuapp.com";
 
 // Replace with url for other devices: change id=2 for switch, id=3 for lock
 const char* resource = "/api/view.php?id=1";
+const char* postURL = "/api/update.php?id=1";
 
 const unsigned long HTTP_TIMEOUT = 10000;  // max respone time from server
 const size_t MAX_CONTENT_SIZE = 512;       // max size of the HTTP response
@@ -37,28 +47,21 @@ byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 struct clientData {
   char name[8];
   char Status[8];
+  char vol[8];
+  char chan[8];
 };
+const int buttonPin6 = 12;
 
-const int buttonPin1 = 5;
-const int buttonPin2 = 8;
-const int buttonPin3 = 17;
-const int buttonPin4 = 31;
-const int buttonPin5 = 11;
-const int buttonPin5 = 12;
-
-int buttonState1 = 0;
-int buttonState2 = 0;
-int buttonState3 = 0;
-int buttonState4 = 0;
-int buttonState5 = 0;
 int buttonState6 = 0;
 
+struct clientData {
+  char name[8];
+  char Status[8];
+  char vol[8];
+  char chan[8];
+};
+
 void setup() {
-pinMode(buttonPin1,INPUT);
-pinMode(buttonPin2,INPUT);
-pinMode(buttonPin3,INPUT);
-pinMode(buttonPin4,INPUT);
-pinMode(buttonPin5,INPUT);
 pinMode(buttonPin6,INPUT);
 pinMode(LED1, OUTPUT);
 pinMode(LED2, OUTPUT);
@@ -241,37 +244,154 @@ bool skipResponseHeaders() {
 }
 
 bool readReponseContent(struct clientData* clientData) {
-
-  const size_t capacity = JSON_OBJECT_SIZE(5) + 50;
-  
-  DynamicJsonBuffer jsonBuffer(capacity);
-
-  JsonObject& root = jsonBuffer.parseObject(client);
-
-  if (!root.success()) {
+  DynamicJsonDocument doc(1000);
+  DeserializationError error = deserializeJson(doc,client);
+  if (error) {
     Serial.println("JSON parsing failed!");
     return false;
   }
-  strcpy(clientData->name, root["name"]);
-  strcpy(clientData->Status, root["status"]);
+  const char* name = doc["name"];
+  const char* Status = doc["status"];
+  const char* chan = doc["channel"];
+  const char* vol = doc["volume"];
+  //const char* test = doc["TestNumber"];
+  
+  strcpy(clientData->name, doc["name"]);
+  strcpy(clientData->Status, doc["status"]);
+  strcpy(clientData->chan, doc["channel"]);
+  strcpy(clientData->vol, doc["volume"]);
+  //strcpy(clientData->test, doc["TestNumber"]);
+   
   return true;
 }
 
+void chanDecode(int n) {
+      int i;
+      if(n>0)
+      {
+        i=n%10;
+        n=n/10;    
+        chanDecode(n);
+        switch (i){
+          case 0:
+          IRsendCodeNEC(zero); 
+          delay(500);
+         // Serial.print("0");
+          break;
+          
+          case 1:
+          IRsendCodeNEC(one);
+          delay(500);
+         // Serial.print("1");
+          break;
+
+          case 2:
+          IRsendCodeNEC(two);
+          delay(500);
+        //  Serial.print("2");
+          break;
+
+          case 3:
+          IRsendCodeNEC(three);
+          delay(500);
+        //  Serial.print("3");
+          break;
+          
+          case 4:
+          IRsendCodeNEC(four);
+          delay(500);
+          //Serial.print("4");
+          break;
+          
+          case 5:
+          IRsendCodeNEC(five);
+          delay(500);
+          //Serial.print("5");
+          break;
+          
+          case 6:
+          IRsendCodeNEC(six);
+          delay(500);
+         // Serial.print("6");
+          break;
+          
+          case 7:
+          IRsendCodeNEC(seven);
+          delay(500);
+         // Serial.print("7");
+          break;
+        
+          case 8:
+          IRsendCodeNEC(eight);
+          delay(500);
+          //Serial.print("8");
+          break;
+              
+          case 9:
+          IRsendCodeNEC(nine);
+          delay(500);
+          //Serial.print("9");
+          break;
+          
+          default:
+          break;
+          }
+      }
+  }
+
 // Print the data extracted from the JSON
 void printclientData(const struct clientData* clientData) {
-  Serial.print("Name = ");
-  Serial.println(clientData->name);
-  Serial.print("Status = ");
-  Serial.println(clientData->Status);
-  if (atoi(clientData->Status)==0){
-    Serial.println("111");
+  if (atoi(clientData->Status)!= prevStatus || atoi(clientData->vol) != prevVol || atoi(clientData->chan)!= prevChan ){
+  Serial.print(clientData->Status);
+  Serial.print(", ");
+  Serial.print(clientData->vol);
+  Serial.print(", ");
+  Serial.println(clientData->chan);
   }
-  else if(atoi(clientData->Status)==1){
+  //check if power status has changed
+  if (atoi(clientData->Status)!= prevStatus){
       IRsendCodeNEC(powerCode); 
-      Serial.println("sent5");
-      delay(200);
+      //Serial.println(atoi(clientData->Status));
+      prevStatus=atoi(clientData->Status);
   }
+  else {
+      //Serial.println("Power Status Same");
+  }
+
+ //check if volume needs to be changed
+ if (atoi(clientData->vol) > prevVol){ //volume up
+    for (int i = atoi(clientData->vol) - prevVol; i>0; i--) {
+      IRsendCodeNEC(volUp);
+      delay(500);
+    }
+    prevVol=atoi(clientData->vol);
+    //Serial.print("volUp ");
+    //Serial.println(prevVol);
+  }
+  else if (atoi(clientData->vol) < prevVol){
+    for (int i = prevVol - atoi(clientData->vol); i>0; i--) {
+      IRsendCodeNEC(volDown);
+      delay(500);
+    }
+    prevVol=atoi(clientData->vol);
+    //Serial.print("volDown ");
+    //Serial.println(prevVol);
+    }
+  else {
+    //Serial.println("Volume Same");
+    } 
+   
+  //check if channel needs to change
+  if (atoi(clientData->chan)!= prevChan){
+      chanDecode(atoi(clientData->chan)); 
+      prevChan=atoi(clientData->chan);
+      //Serial.println("");
+  }    
+  else {
+     //Serial.println("Channel Same");
+    }
 }
+
 
 // Close the connection with the HTTP server
 void disconnect() {
@@ -286,44 +406,7 @@ void wait() {
 }
 
 void loop() {
-  buttonState1 = digitalRead(buttonPin1);
-  buttonState2 = digitalRead(buttonPin2);
-  buttonState3 = digitalRead(buttonPin3);
-  buttonState4 = digitalRead(buttonPin4);
-  buttonState5 = digitalRead(buttonPin5);
   buttonState6 = digitalRead(buttonPin6);
-  
-  if (buttonState1==HIGH){
-      IRsendCodeRC6(volDown); 
-      Serial.println("sent1");
-      delay(200);
-    }
-
-  if (buttonState2==HIGH){
-      IRsendCodeRC5(volUp); 
-      Serial.println("sent2");
-      delay(200);
-    }
-
-  if (buttonState3==HIGH){ //sony requires code to be sent 3 times
-      IRsendCodeSony(chanDown); 
-      IRsendCodeSony(chanDown); 
-      IRsendCodeSony(chanDown); 
-      Serial.println("sent3");
-      delay(200);
-    }
-
-  if (buttonState4==HIGH){
-      IRsendCodeNEC(chanUp); 
-      Serial.println("sent4");
-      delay(200);
-    }
- 
-  if (buttonState5==HIGH){
-      IRsendCodeNEC(powerCode); 
-      Serial.println("sent5");
-      delay(200);
-    }     
    
    if (buttonState6==HIGH){
     //clear current codes
